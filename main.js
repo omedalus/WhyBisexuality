@@ -4,26 +4,26 @@
 
 //maximum fitness is equal to the number of attributes if a cap is set
 var attributeCount = 100;
-var populationCount = 100;
-var mutationLikelihood = .03;
+var populationCount = 25;
+var mutationLikelihood = .01;
 
-var phenotypeWeightAvg = 40;
-var phenotypeWeightStd = 4;
-var dominancePredispositionAttributes = 0.75;
-var dominancePredispositionTemplate = 0.75;
+var phenotypeWeightAvg = 5;
+var phenotypeWeightStd = 0;
+var dominancePredispositionAttributes = 0.50;
+var dominancePredispositionTemplate = 0.50;
 
-var templateWeightAvg = 25;
-var templateWeightStd = 5;
+var templateWeightAvg = 0;
+var templateWeightStd = 0;
 
 var templateAverageSize = 4;
 var templateSizeDistribution = 1.5;
 
-var generationCycles = 25;
+var generationCycles = 250;
 var simulationCount = 1;
 
-var templateCount = 100;
+var templateCount = 0;
 
-var reproductionCutoff = .05;
+var reproductionCutoff = .2;
 
 var c = document.getElementById("myCanvas");
 var ctx = c.getContext("2d");
@@ -31,11 +31,11 @@ ctx.font = "12px Arial";
 
 
 function createPhenotypeWeights(){
-    var phenotypeWeights = new Array();
+    var phenotypeWeightsNew = new Array();
     for (var i = 0; i < attributeCount; i++){
-        phenotypeWeights.push(phenotypeWeightAvg + phenotypeWeightStd * randn_bm());
+        phenotypeWeightsNew.push(phenotypeWeightAvg + phenotypeWeightStd * randn_bm());
     }
-    return phenotypeWeights;
+    return phenotypeWeightsNew;
 }
 
 var H1Pop = [];
@@ -76,34 +76,34 @@ function initialize(){
     templateManager.randomize(templateCount, templateWeightAvg, templateWeightStd, templateAverageSize, templateSizeDistribution, dominancePredispositionTemplate, attributeCount);
 }
 
-function getAverageFitness(population, spot){
+function getAverageFitness(population){
     var total = 0;
     for (each of population){
         total += each.getFitness(templateManager);
     }
     total = total/population.length
-    ctx.fillText(total,10,spot);
+    return total;
 }
 
-function getAverageNonTemplateFitness(population, spot){
+function getAverageNonTemplateFitness(population){
     var total = 0;
     for (each of population){
         total += each.getNonTemplateFitness(templateManager);
     }
     total = total/population.length
-    ctx.fillText("Normal: " +  total,10,spot);
+    return total;
 }
 
-function getAverageTemplateFitness(population, spot){
+function getAverageTemplateFitness(population){
     var total = 0;
     for (each of population){
         total += each.getTemplateFitness(templateManager);
     }
     total = total/population.length
-    ctx.fillText("Template: " + total,10,spot);
+    return total;
 }
 
-function getReproducingPop(population, cutoff){
+function getReproducingPop(population, cutoff, spot){
     var tupleList = new Array ();
     for (each of population){
         var tuple = [each, each.getFitness(templateManager)];
@@ -116,56 +116,96 @@ function getReproducingPop(population, cutoff){
         return a[1] - b[1];
     });
 
-    //const topList = tupleList.slice(tupleList.length - Math.floor(tupleList.length * cutoff), tupleList.length);
-    const topList = tupleList.slice(0, Math.floor(tupleList.length * cutoff));
-    var finalList = new Array();
+    for (var i = 0; i < tupleList.length; i++){
+       ctx.fillText(tupleList[i][0].getFitness(templateManager),100 + 200 * spot,150 + i * 10);
+    }
 
-    ctx.fillText("TEST", 200, 200);
+    //const topList = tupleList.slice(tupleList.length - Math.floor(tupleList.length * cutoff), tupleList.length);
+    const topList = tupleList.slice(tupleList.length - Math.floor(tupleList.length * cutoff), );
+    var finalList = new Array();
 
     for (each of topList){
         finalList.push(each[0]);
     }
+
     return finalList;
 }
 
-// Can implement asexual recombination. Not currently
-function reproduceHerm(population){
+function resetPhenotypes(){
+
+}
+
+function copyAttributes(attributes){
+    var newList = new Array();
+
+    for (each of attributes){
+        var newAttribute = new Attribute(each.getBoolean(), each.getIndex());
+        newList.push(newAttribute);
+    }
+    return newList;
+}
+
+// spot is used for writing to the canvas when debugging 
+function reproduceHerm(population, spot){
     var newPopulation = Array();
+    var j = 0;
     while (newPopulation.length < populationCount){
         for (each of population){
             const ea = each;
-            var newOrgo = new Organism(ea.getHaploid());
-            if (ea.getHaploid()){
-                newOrgo.setAttributes(each.getAttributes1(), each.getAttributes1(), phenotypeWeights);
+            const haploid = each.getHaploid();
+            var newOrgo = new Organism(haploid);
+            var temp = copyAttributes(each.getAttributes1());
+            if (haploid){
+                newOrgo.setAttributes(temp, temp, phenotypeWeights); 
             } else {
-                newOrgo.setAttributes(each.getAttributes1(), each.getAttributes2(), phenotypeWeights);
+               newOrgo.setAttributes(temp, copyAttributes(ea.getAttributes2()), phenotypeWeights);
             }
+
+            ctx.fillText(newOrgo.getFitness(templateManager), 330 + 250 * spot, 300 + 10 * j);
             newOrgo.mutate(mutationLikelihood);
+            ctx.fillText(newOrgo.getFitness(templateManager), 330 + 250 * spot, 300 + 10 * j);
             newPopulation.push(newOrgo);
         }
     }
     return newPopulation;
 }
 
+function reproduceBisexual(malePopulation, femalePopulation, spot){
+    var newPopulation = Array();
+    var j = 0;
+    var male = true;
+    while (newPopulation.length < populationCount){
+        for (each of femalePopulation){
 
-initialize();
-getAverageFitness(H1Pop, 50);
-getAverageNonTemplateFitness(H1Pop, 60);
-getAverageTemplateFitness(H1Pop, 70);
+        }
+    }
+    return newPopulation;
+}
 
-getAverageFitness(H2Pop, 80);
-getAverageNonTemplateFitness(H2Pop, 90);
-getAverageTemplateFitness(H2Pop, 100);
-
-for (var i = 0; i < simulationCount; i++){
-    for (var j = 2; j < generationCycles + 2; j++){
-        getAverageFitness(H1Pop, 50 + j * 30);
-        getAverageNonTemplateFitness(H1Pop, 60 + j * 30);
-        getAverageTemplateFitness(H1Pop, 70 + j * 30);
-        H1Pop = reproduceHerm(getReproducingPop(H1Pop, reproductionCutoff));
-
+function displayPhenotypeWeights(spot){
+    for (var i = 0; i < phenotypeWeights.length; i++){
+        ctx.fillText( phenotypeWeights[i], 100 + 150 * spot, 800 + 10 * i);
     }
 }
+
+
+initialize();
+
+for (var i = 0; i < simulationCount; i++){
+    for (var j = 0; j < generationCycles; j++){
+        ctx.fillText(getAverageFitness(H1Pop), 200 * j, 30);
+        ctx.fillText(getAverageNonTemplateFitness(H1Pop), 200 * j, 40);
+        ctx.fillText(getAverageTemplateFitness(H1Pop), 200 * j, 50);
+        //displayPhenotypeWeights(j);
+        H1Pop = reproduceHerm(getReproducingPop(H1Pop, reproductionCutoff, j), j);
+
+        ctx.fillText(getAverageFitness(H1Pop), 200 * j, 70);
+        ctx.fillText(getAverageNonTemplateFitness(H1Pop), 200 * j, 80);
+        ctx.fillText(getAverageTemplateFitness(H1Pop), 200 * j, 90);
+        H2Pop = reproduceHerm(getReproducingPop(H2Pop, reproductionCutoff, j), j);
+    }
+}
+
 
 getAverageFitness(H1Pop, 10);
 getAverageNonTemplateFitness(H1Pop, 20);
