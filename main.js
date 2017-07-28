@@ -2,6 +2,21 @@
  * Created by Paul Bogdan on 7/25/2017.
  */
 
+
+// Creates normal distribution between -1 and 1. From: https://stackoverflow.com/questions/25582882/javascript-math-random-normal-distribution-gaussian-bell-curve
+function randn_bm() {
+    var u = 0, v = 0;
+    while(u === 0) u = Math.random(); //Converting [0,1) to (0,1)
+    while(v === 0) v = Math.random();
+    return Math.sqrt( -2.0 * Math.log( u ) ) * Math.cos( 2.0 * Math.PI * v );
+}
+
+
+
+$(document).ready(function() {
+
+/* global $ */
+
 //maximum fitness is equal to the number of attributes if a cap is set
 var attributeCount = 100;
 var populationCount = 100;
@@ -25,9 +40,6 @@ var templateCount = 100;
 
 var reproductionCutoff = .05;
 
-var c = document.getElementById("myCanvas");
-var ctx = c.getContext("2d");
-ctx.font = "12px Arial";        
 
 
 function createPhenotypeWeights(){
@@ -81,8 +93,8 @@ function getAverageFitness(population, spot){
     for (each of population){
         total += each.getFitness(templateManager);
     }
-    total = total/population.length
-    ctx.fillText(total,10,spot);
+    total = total/population.length;
+    $('#console').append(`Average fitness: ${total}\n`);
 }
 
 function getAverageNonTemplateFitness(population, spot){
@@ -90,8 +102,8 @@ function getAverageNonTemplateFitness(population, spot){
     for (each of population){
         total += each.getNonTemplateFitness(templateManager);
     }
-    total = total/population.length
-    ctx.fillText("Normal: " +  total,10,spot);
+    total = total/population.length;
+    $('#console').append(`Normal: ${total}\n`);
 }
 
 function getAverageTemplateFitness(population, spot){
@@ -100,7 +112,7 @@ function getAverageTemplateFitness(population, spot){
         total += each.getTemplateFitness(templateManager);
     }
     total = total/population.length
-    ctx.fillText("Template: " + total,10,spot);
+    $('#console').append(`Template: ${total}\n`);
 }
 
 function getReproducingPop(population, cutoff){
@@ -120,7 +132,7 @@ function getReproducingPop(population, cutoff){
     const topList = tupleList.slice(0, Math.floor(tupleList.length * cutoff));
     var finalList = new Array();
 
-    ctx.fillText("TEST", 200, 200);
+    $('#console').append(`TEST\n`);
 
     for (each of topList){
         finalList.push(each[0]);
@@ -172,10 +184,5 @@ getAverageNonTemplateFitness(H1Pop, 20);
 getAverageTemplateFitness(H1Pop, 30);
 
 
-    // Creates normal distribution between -1 and 1. From: https://stackoverflow.com/questions/25582882/javascript-math-random-normal-distribution-gaussian-bell-curve
-function randn_bm() {
-    var u = 0, v = 0;
-    while(u === 0) u = Math.random(); //Converting [0,1) to (0,1)
-    while(v === 0) v = Math.random();
-    return Math.sqrt( -2.0 * Math.log( u ) ) * Math.cos( 2.0 * Math.PI * v );
-}
+
+}); // document ready
