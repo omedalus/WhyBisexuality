@@ -1,22 +1,22 @@
 /**
- * Created by Paul Bogdan on 7/25/2017.
+ * A class that represents a single Mendelian attribute.
+ * @param {bool} boolean Paul will have to explain what this is.
+ * @param {number} index Which attribute in the attribute set this attribute is.
  */
+var Attribute = function(boolean, index){
+  this.boolean = !!boolean;
+  this.index = index;
+};
 
+Attribute.prototype.getIndex = function() {
+  return this.index;
+};
 
- function Attribute(boolean, index){
-     this.boolean = boolean;
-     this.index = index;
+Attribute.prototype.mutate = function() {
+  this.boolean = !this.boolean;
+};
 
-    this.getIndex = function (){
-         return this.index;
-     }
+Attribute.prototype.getBoolean = function() {
+  return this.boolean;
+};
 
-     this.mutate = function (){
-         this.boolean = !this.boolean;
-     }
-
-     this.getBoolean = function (){
-         return this.boolean;
-     }
-
- }

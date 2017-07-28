@@ -2,6 +2,9 @@
  * Created by Paul Bogdan on 7/25/2017.
  */
 
+/* global Attribute */
+/* global Phenotype */
+
 function Organism(haploidBool, templateManager){
 
     this.haploid = haploidBool;

@@ -1,6 +1,8 @@
 /**
  * Created by Paul Bogdan on 7/25/2017.
  */
+ 
+/* global randn_bm */
 
  function TemplateManager(){
 
