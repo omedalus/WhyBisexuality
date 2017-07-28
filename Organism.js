@@ -2,9 +2,10 @@
  * Created by Paul Bogdan on 7/25/2017.
  */
 
-function Organism(haploidBool){
+function Organism(haploidBool, templateManager){
 
     this.haploid = haploidBool;
+    this.templateManager = templateManager;
     this.attributes1 = new Array();
     this.attributes2 = new Array();
     this.phenotypes = new Array();
@@ -55,7 +56,7 @@ function Organism(haploidBool){
     }
 
     // Could be optimized
-
+    // not currently used
     this.resetPhenotypes = function (){
         for (var i = 0; i < this.phenotypes.length; i++){
             this.phenotypes[i].setBoolean(this.attributes1[i].getBoolean());
@@ -87,9 +88,11 @@ function Organism(haploidBool){
                 }
             }
         }
-        this.resetPhenotypes();
+
     }
 
+    // returns fitness directly based off of phenotypes and phenotype fitness weights
+    // does not use templates
     this.getNonTemplateFitness = function(){
         total = 0;
         for (each of this.phenotypes){
@@ -100,12 +103,14 @@ function Organism(haploidBool){
         return total
     }
 
-    this.getTemplateFitness = function(templateManager){
-        return templateManager.assessTemplateFitness(this);
+    // returns fitness directly based off of template fitness effects
+    this.getTemplateFitness = function(){
+        return this.templateManager.assessTemplateFitness(this);
     }
 
-    this.getFitness = function (templateManager){
-        return this.getNonTemplateFitness() + this.getTemplateFitness(templateManager);
+    // returns fitness usins both template and non-template effects
+    this.getFitness = function (){
+        return this.getNonTemplateFitness() + this.getTemplateFitness();
     }
 
     this.getHaploid = function () {
@@ -124,7 +129,9 @@ function Organism(haploidBool){
         return this.attributes2;
     }
 
-
+    this.print = function (pretext){
+        console.log(pretext + this.getFitness() );
+    }
 
     this.getRandoAttribute = function (){
         if (this.haploid){
