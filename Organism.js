@@ -20,6 +20,7 @@ function Organism(haploidBool){
             this.attributes1 = attList1;
             this.attributes2 = attList2;
         }
+        this.phenotypes = [];
         this.setPhenotypes(phenotypeWeights);
     }
 
@@ -55,6 +56,12 @@ function Organism(haploidBool){
 
     // Could be optimized
 
+    this.resetPhenotypes = function (){
+        for (var i = 0; i < this.phenotypes.length; i++){
+            this.phenotypes[i].setBoolean(this.attributes1[i].getBoolean());
+        }
+    }
+
     this.getPhenotypes = function (){
         return this.phenotypes;
     }
@@ -63,6 +70,7 @@ function Organism(haploidBool){
         for (var i = 0; i < this.attributes1.length; i++){
             if (Math.random() < mutationLikelihood){
                 this.attributes1[i].mutate(); 
+                this.phenotypes[i].setBoolean(this.attributes1[i].getBoolean());
                 if (this.haploid){
                     this.phenotypes[i].setBoolean(this.attributes1[i].getBoolean());
                 } else {
@@ -79,6 +87,7 @@ function Organism(haploidBool){
                 }
             }
         }
+        this.resetPhenotypes();
     }
 
     this.getNonTemplateFitness = function(){

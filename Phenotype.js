@@ -13,13 +13,10 @@ function Phenotype(weight, boolean, index){
 
     this.setBoolean = function (boolean){
         this.boolean = boolean;
+        ctx.fillText("TEST", 400, 400);
     }
     
     this.getWeight = function(){
         return this.weight;
-    }
-
-    this.getPhenotype = function (){
-        return phenotype;
     }
  }
