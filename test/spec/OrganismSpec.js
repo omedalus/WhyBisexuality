@@ -2,63 +2,29 @@
 /* global expect */
 
 /* global Organism */
+/* global Gene */
 
 
 describe("Organism", function() {
-
-  beforeEach(function() {
-    // Per-test setup/reset, if needed.
-  });
-
-  afterEach(function() {
-    // Per-test release resources, if needed.
-  });
+  // Create a gene pool that we'll be drawing genes from.
+  let genepool = {
+    'OCA2': {
+      'brown eyes': new Gene('OCA2', 'brown eyes', 1),
+      'blue eyes': new Gene('OCA2', 'blue eyes', 2)
+    },
+    'GLI3': {
+      'six fingers': new Gene('GLI3', 'six fingers', 1) ,   
+      'five fingers': new Gene('GLI3', 'five fingers', 2)    
+    },
+    'MCR2': {
+      'black coat': new Gene('MCR1', 'black coat', 1),
+      'orange coat': new Gene('MCR1', 'orange coat', 1),
+      'white coat': new Gene('MCR1', 'white coat', 2)
+    }
+  };
   
-  describe("haploid", function() {
-    it("should only have one genome.", function() {
-      var organism = new Organism(true, templateManager);
-      organism.setAttributes(seedAttributesAllRecessive1, seedAttributesAllDominant1, phenotypeWeights);
-      
-      expect(organism.attributes1.length).toEqual(numAttributes);
-      expect(organism.attributes2.length).toEqual(0);
-    });
-  });
-  
-  describe("diploid", function() {
-    it("should have two genomes.", function() {
-      var organism = new Organism(false, templateManager);
-      organism.setAttributes(seedAttributesAllRecessive1, seedAttributesAllDominant1, phenotypeWeights);
-      
-      expect(organism.attributes1.length).toEqual(numAttributes);
-      expect(organism.attributes2.length).toEqual(numAttributes);
-    });
+  it('should be able to inherit at least one set of genes', function() {
     
-    it("should exhibit dominant phenotype when heterozygous.", function() {
-      var organism = new Organism(false, templateManager);
-      organism.setAttributes(seedAttributesAllRecessive1, seedAttributesAllDominant1, phenotypeWeights);
-      
-      var phenotypes = organism.getPhenotypes();
-      for (var iPheno = 0; iPheno < numAttributes; iPheno++) {
-        expect(phenotypes[iPheno].getBoolean()).toBeTruthy();
-      }
-    });
-
-    it("should exhibit dominant phenotype when homozygous dominant.", function() {
-      var organism = new Organism(false, templateManager);
-      organism.setAttributes(seedAttributesAllDominant1, seedAttributesAllDominant2, phenotypeWeights);
-      
-      var phenotypes = organism.getPhenotypes();
-      expect(phenotypes[0].getBoolean()).toBeTruthy();
-    });
-    
-    it("should exhibit recessive phenotype when homozygous recessive.", function() {
-      var organism = new Organism(false, templateManager);
-      organism.setAttributes(seedAttributesAllRecessive1, seedAttributesAllRecessive2, phenotypeWeights);
-      
-      var phenotypes = organism.getPhenotypes();
-      expect(phenotypes[0].getBoolean()).toBeFalsy();
-    });
   });
-  
 });
 

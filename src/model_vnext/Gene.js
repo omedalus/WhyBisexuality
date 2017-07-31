@@ -58,3 +58,44 @@ Gene.getExpressions = function(genes) {
   return variants;
 };
 
+
+/** 
+ * Class-static method that creates a collection of genes, each with a random number of
+ * variants within given parameters.
+ * @param {number} count How many genes the pool will contain.
+ * @param {number} varMin The smallest number of variants that a gene can have.
+ * @param {number} varMax The largest number of variants that a gene can have.
+ * @returns {Object} A dictionary of arrays of Gene objects, keyed by locus.
+ */
+Gene.createPool = function(count, varMin, varMax) {
+  let genepool = {};
+  
+  let padLeadingZeroes = function(num, size) {
+    var s = num + '';
+    while (s.length < size) s = '0' + s;
+    return s;
+  };
+  
+  let numGeneDigits = Math.ceil(Math.log(count + 1) / Math.log(10));
+  let numVariantDigits = Math.ceil(Math.log(varMax + 1) / Math.log(10));
+  
+  for (let iLocus = 1; iLocus <= count; iLocus++) {
+    let geneNum = padLeadingZeroes(iLocus, numGeneDigits);
+    let locusName = 'GENE' + geneNum;
+    
+    genepool[locusName] = [];
+    
+    let numVariants = varMin + Math.floor(Math.random() * (varMax - varMin + 1));
+    for (let iVariant = 1; iVariant <= numVariants; iVariant++) {
+      let variantNum = padLeadingZeroes(iVariant, numVariantDigits);
+      let variantName = 'G' + geneNum + 'V' + variantNum;
+      
+      let dominance = Math.ceil(Math.random() * numVariants);
+
+      let gene = new Gene(locusName, variantName, dominance);
+      genepool[locusName].push(gene);
+    }
+  }
+  
+  return genepool;
+};
