@@ -15,23 +15,47 @@
  */
 var FitnessTemplate = function(requiredExpressions, scoreValue) {
   let self = this;
+  
+  /** 
+   * A collection of gene variants that need to be expressed by an organism in order to match 
+   * this template. Keyed by gene locus.
+   * @type {Object.<string, string>} 
+   */
   self.requiredExpressions = requiredExpressions;
+  
+  /** 
+   * The increase (or decrease, if negative) in an organism's total fitness score that the 
+   * organism receives by matching this template.
+   * @type {number} 
+   */
   self.scoreValue = scoreValue;
 };
 
 
 /**
- * Tests the collection of expressions against this template. If all of the expressions required
- * by this template are present in the expressions collection, then the collection matches this
+ * Tests the phenotype against this template. If all of the expressions required
+ * by this template are present in the phenotype, then the phenotype matches this
  * template.
- * @param {Object.<string, Array.<string> >} expressions A collection of "variant" values,
+ * @param {Object.<string, Array.<string> >} phenotype A collection of "variant" values,
  *     keyed by the gene that they're a variant of. The values are gathered into arrays in order
  *     to permit co-expression, such as the case with co-dominance.
  * @returns {boolean} True if all of this template's required expressions are present in the
  *     expressions collection, false otherwise.
  */
-FitnessTemplate.prototype.match = function(expressions) {
-  
+FitnessTemplate.prototype.match = function(phenotype) {
+  let self = this;
+  for (let locus in self.requiredExpressions) {
+    let variantRequired = self.requiredExpressions[locus];
+    if (!(locus in phenotype)) {
+      return false;
+    }
+    
+    let variantsExpressed = phenotype[locus];
+    if (!variantsExpressed.includes(variantRequired)) {
+      return false;
+    }
+  }
+  return true;
 };
 
 

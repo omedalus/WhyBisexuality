@@ -163,13 +163,101 @@ describe('FitnessTemplate', function() {
           expect(count).toBeGreaterThan(150);
         });
       });
-      
     });
-  
-
   });
 
-  
+  describe('match', function() {
+    it('should match when the only requirement is met.', function() {
+      let fitnessTemplate = new FitnessTemplate({
+        'GENE1': 'G1V1'
+      }, 10);
+
+      let phenotype = {'GENE1': ['G1V1']};
+      expect(fitnessTemplate.match(phenotype)).toBe(true);
+    });
+    
+
+    it('should not match when the only requirement is not met.', function() {
+      let fitnessTemplate = new FitnessTemplate({
+        'GENE1': 'G1V1'
+      }, 10);
+      
+      let phenotype = {'GENE1': ['G1V2']};
+      expect(fitnessTemplate.match(phenotype)).toBe(false);
+    });
+    
+    
+    it('should match if both of two requirements are met.', function() {
+      let fitnessTemplate = new FitnessTemplate({
+        'GENE1': 'G1V1',
+        'GENE2': 'G2V1',
+      }, 10);
+      
+      let phenotype = {
+        'GENE1': ['G1V1'],
+        'GENE2': ['G2V1']
+      };
+      expect(fitnessTemplate.match(phenotype)).toBe(true);
+    });
+
+
+    it('should not match if one of two requirements are not met.', function() {
+      let fitnessTemplate = new FitnessTemplate({
+        'GENE1': 'G1V1',
+        'GENE2': 'G2V1',
+      }, 10);
+      
+      let phenotype = {
+        'GENE1': ['G1V1'],
+        'GENE2': ['G2V2']
+      };
+      expect(fitnessTemplate.match(phenotype)).toBe(false);
+    });
+
+
+    it('should not match if a required gene isn\'t even in the phenotype.', function() {
+      let fitnessTemplate = new FitnessTemplate({
+        'GENE1': 'G1V1',
+        'GENE2': 'G2V1',
+      }, 10);
+      
+      let phenotype = {
+        'GENE1': ['G1V1']
+      };
+      expect(fitnessTemplate.match(phenotype)).toBe(false);
+    });
+
+    it('should not be distracted by other genes in the phenotype.', function() {
+      let fitnessTemplate = new FitnessTemplate({
+        'GENE1': 'G1V1',
+        'GENE2': 'G2V1',
+      }, 10);
+      
+      let phenotype = {
+        'GENE1': ['G1V1'],
+        'GENE2': ['G2V1'],
+        'GENE3': ['G3V1'],
+        'GENE4': ['G4V1'],
+        'GENE5': ['G5V1']
+      };
+      expect(fitnessTemplate.match(phenotype)).toBe(true);
+    });
+
+
+    it('should match if an allele is co-expressed.', function() {
+      let fitnessTemplate = new FitnessTemplate({
+        'GENE1': 'G1V1',
+        'GENE2': 'G2V2',
+      }, 10);
+      
+      let phenotype = {
+        'GENE1': ['G1V1', 'G1V2'],
+        'GENE2': ['G2V1', 'G2V2', 'G3V2']
+      };
+      expect(fitnessTemplate.match(phenotype)).toBe(true);
+    });
+
+  });  
   
 });
 
