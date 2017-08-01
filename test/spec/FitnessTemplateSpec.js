@@ -165,6 +165,39 @@ describe('FitnessTemplate', function() {
       });
     });
   });
+  
+  describe('createRandomSet', function() {
+    it('should create many different templates.', function() {
+      // Create 100 templates, varying in size from 1 to 5, with scores from -2 to 2.
+      let fitnessTemplates = FitnessTemplate.createRandomSet(100, 1, 5, -2, 2, genepoolSmall);
+      
+      // Make sure their sizes are all across the board.
+      let sizeCounts = [0, 0, 0, 0, 0];
+      _.each(fitnessTemplates, function(fitnessTemplate) {
+        let templateSize = _.size(fitnessTemplate.requiredExpressions);
+        expect(templateSize).not.toBeLessThan(1);
+        expect(templateSize).not.toBeGreaterThan(5);
+        sizeCounts[templateSize - 1]++;
+      });
+      // Probabilistic. With 100 iid trials for 5 buckets, we expect 20 items per bucket.
+      // Getting fewer than 5 should be extremely unlikely.
+      _.each(sizeCounts, function(count) {
+        expect(count).toBeGreaterThan(5);
+      });
+      
+      // Make sure their scores are all across the board.
+      let scoreBuckets = [0, 0, 0, 0, 0];
+      _.each(fitnessTemplates, function(fitnessTemplate) {
+        let scoreBucket = Math.floor(fitnessTemplate.scoreValue);
+        expect(scoreBucket).not.toBeLessThan(-2);
+        expect(scoreBucket).not.toBeGreaterThan(2);
+        scoreBuckets[scoreBucket + 2]++;
+      });
+      _.each(scoreBuckets, function(count) {
+        expect(count).toBeGreaterThan(5);
+      });
+    });
+  });
 
   describe('match', function() {
     it('should match when the only requirement is met.', function() {

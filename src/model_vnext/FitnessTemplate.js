@@ -97,3 +97,30 @@ FitnessTemplate.createRandom = function(sizeMin, sizeMax, scoreMin, scoreMax, ge
 };
 
 
+
+/**
+ * Creates a set of random FitnessTemplates.
+ * @param {number} count How many FitnessTemplate objects to create.
+ * @param {number} sizeMin The smallest number of gene variants to select from the gene pool, to
+ *     make into a template.
+ * @param {number} sizeMax The largest number of gene variants to select from the gene pool, to
+ *     make into a template.
+ * @param {number} scoreMin The lowest possibility for the fitness points an organism will 
+ *     receive for matching the template. Can be negative, meaning that the template represents
+ *     a deleterious phenotype.
+ * @param {number} scoreMax The highest possibility for the fitness points an organism will 
+ *     receive for matching the template.
+ * @param {Object.<string, Array.<Gene> >} genepool A dictionary of arrays of Gene objects, keyed 
+ *     by locus.
+ * @returns {FitnessTemplate} A newly created FitnessTemplate object.
+ */
+FitnessTemplate.createRandomSet = function(count, sizeMin, sizeMax, scoreMin, scoreMax, genepool) {
+  let retval = [];
+  _.times(count, function() {
+    let fitnessTemplate = 
+        FitnessTemplate.createRandom(sizeMin, sizeMax, scoreMin, scoreMax, genepool);
+    retval.push(fitnessTemplate);
+  });
+  return retval;
+};
+
