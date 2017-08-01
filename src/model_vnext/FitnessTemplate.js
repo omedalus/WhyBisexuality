@@ -90,7 +90,7 @@ FitnessTemplate.createRandom = function(sizeMin, sizeMax, scoreMin, scoreMax, ge
     requiredExpressions[locus] = variantSelected;
   });
   
-  let scoreValue = scoreMin + Math.floor(Math.random() * (scoreMax - scoreMin + 1));
+  let scoreValue = scoreMin + Math.floor(Math.random() * (scoreMax - scoreMin + 1)); // TODO: I THINK THIS IS BUG
   
   let fitnessTemplate = new FitnessTemplate(requiredExpressions, scoreValue);
   return fitnessTemplate;

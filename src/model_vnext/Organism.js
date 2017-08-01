@@ -1,5 +1,8 @@
 /* global _ */
 
+/* global Gene */
+/* global FitnessTemplate */
+
 /**
  * An individual in a population. Consists of one or more sets of genes that, working together,
  * produce a phenotype. Can reproduce, which involves a recombination of one or more
@@ -15,6 +18,15 @@ var Organism = function() {
    */
   self.genes = {};
   
+  
+  /**
+   * The organism's index in the Breeding Pit collection. Not used directly by the organism
+   * itself, but handy for letting the Breeding Pit track this individual.
+   * @type {number=}
+   */
+  self.index = null;
+  
+  
   /**
    * The organism's sex, which is assignable independently of its genome for purposes of this
    * simulation. This is just a designator used by the BreedingPit to select a mate for 
@@ -22,6 +34,7 @@ var Organism = function() {
    * use the following convention: null means hermaphroditic (can mate with any other 
    * hermaphrodite), 'M' means male (can mate with any female), and 'F' means female (can mate 
    * with any male).
+   * @type {string=}
    */
   self.sex = null;
 };
@@ -59,6 +72,44 @@ Organism.prototype.produceGamete = function() {
 };
 
 
+/**
+ * Returns the gene variants expressed by this individual.
+ * @returns {Object.<string, Array.<string> >} A dictionary of arrays of "variant" values,
+ *     keyed by locus.
+ */
+Organism.prototype.getPhenotype = function() {
+  let self = this;
+  let allMyGenes = _.chain(self.genes).
+      values().
+      reduce(function(memo, variants) {
+        return memo.concat(variants);
+      }, []). 
+      value();
+      
+  let phenotype = Gene.getExpressions(allMyGenes);
+  return phenotype;
+};
+
+
+/**
+ * Determines an organism's net fitness based on which templates are matched by its phenotype.
+ * @param {Array.<FitnessTemplate>} fitnessTemplates The templates that determine the 
+ *     organism's fitness in this environment.
+ * @returns {number} The organism's fitness score.
+ */
+Organism.prototype.getFitnessScore = function(fitnessTemplates) {
+  let self = this;
+  let phenotype = self.getPhenotype();
+  
+  let score = _.reduce(fitnessTemplates, function(memo, fitnessTemplate) {
+    if (fitnessTemplate.match(phenotype)) {
+      memo += fitnessTemplate.scoreValue;
+    }
+    return memo;
+  }, 0);
+  
+  return score;
+};
 
 
 
