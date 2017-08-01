@@ -6,13 +6,14 @@
 /* global Gene */
 
 
-describe("Organism", function() {
+describe('Organism', function() {
   
   /**
    * Helper function to grab gene variants and assemble them into an array.
-   * @param {Object} genepool Dictionary of arrays of Gene objects, keyed by locus.
+   * @param {Object.<string, Array.<Gene> >} genepool Dictionary of arrays of Gene objects, 
+   *     keyed by locus.
    * @param {number} iVariant Which element to grab from each gene, 1-indexed.
-   * @returns {Gene[]} The iVariant-th variant of each gene.
+   * @returns {Array.<Gene>} The iVariant-th variant of each gene.
    */
   let grabGeneVariant = function(genepool, iVariant) {
     let retval = [];

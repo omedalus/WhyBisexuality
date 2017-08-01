@@ -1,5 +1,4 @@
 /* global _ */
-/* global Gene */
 
 /**
  * An individual in a population. Consists of one or more sets of genes that, working together,
@@ -18,7 +17,7 @@ var Organism = function() {
 /**
  * Adds the genes in the array to the organism's genome. Used in the initial
  * creation of the organism.
- * @param {Gene[]} genes An array of Gene objects.
+ * @param {Array.<Gene>} genes An array of Gene objects.
  * @returns {Organism} This object.
  */
 Organism.prototype.inheritGenes = function(genes) {
@@ -36,7 +35,7 @@ Organism.prototype.inheritGenes = function(genes) {
 /**
  * For the locus of every gene in the organism's genome, outputs one gene at that locus,
  * selected at random from the organism's genome.
- * @returns {Object} A dictionary of Gene objects, keyed by locus.
+ * @returns {Object.<string, Gene>} A dictionary of Gene objects, keyed by locus.
  */
 Organism.prototype.produceGamete = function() {
   let self = this;

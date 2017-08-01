@@ -27,11 +27,11 @@ var Gene = function(locus, variant, dominance) {
 /**
  * Class-static method that determines which gene variants will get expressed. You may pass in 
  * Gene objects of different loci.
- * @param {array} genes An array of Gene objects.
- * @returns {Object} A dictionary of arrays of "variant" values. The keys of this dictionary 
- *     correspond to the loci of the Gene objects passed. The elements of the array are the 
- *     sorted values of the "variant" members of the highest-dominant genes for each locus.
- *     This is implemented as an array in order to permit co-dominance.
+ * @param {Array.<Gene>} genes An array of Gene objects.
+ * @returns {Object.<string, Array.<string> >} A dictionary of arrays of "variant" values. The keys 
+ *     of this dictionary correspond to the loci of the Gene objects passed. The elements of the 
+ *     array are the sorted values of the "variant" members of the highest-dominant genes for 
+ *     each locus. This is implemented as an array in order to permit co-dominance.
  */
 Gene.getExpressions = function(genes) {
   let variants = {};
@@ -65,7 +65,8 @@ Gene.getExpressions = function(genes) {
  * @param {number} count How many genes the pool will contain.
  * @param {number} varMin The smallest number of variants that a gene can have.
  * @param {number} varMax The largest number of variants that a gene can have.
- * @returns {Object} A dictionary of arrays of Gene objects, keyed by locus.
+ * @returns {Object.<string, Array.<Gene> >} A dictionary of arrays of Gene objects, keyed 
+ *     by locus.
  */
 Gene.createPool = function(count, varMin, varMax) {
   let genepool = {};
@@ -85,7 +86,7 @@ Gene.createPool = function(count, varMin, varMax) {
     
     genepool[locusName] = [];
     
-    let numVariants = varMin + Math.floor(Math.random() * (varMax - varMin + 1));
+    let numVariants = _.random(varMin, varMax);
     for (let iVariant = 1; iVariant <= numVariants; iVariant++) {
       let variantNum = padLeadingZeroes(iVariant, numVariantDigits);
       let variantName = 'G' + geneNum + 'V' + variantNum;
