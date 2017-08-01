@@ -289,6 +289,39 @@ describe('Organism', function() {
       expect(score).not.toBeLessThan(700);
       expect(score).not.toBeGreaterThan(800);
     });
+
+
+    it('should be computing fitness by phenotype with non-degenerate templates.', function() {
+      let dude = new Organism();
+      dude.inheritGenes(grabGeneVariant(genepoolSortedDominance, null));
+      dude.inheritGenes(grabGeneVariant(genepoolSortedDominance, null));
+      
+      // The dude is now diploid, and should have about 75% expression of dominant alleles.
+      
+      // Set up 100 non-overlapping three-gene templates.
+      let loci = _.keys(genepoolSortedDominance);
+      let templates = [];
+      _.times(100, function() {
+        let locus1 = loci.shift();
+        let locus2 = loci.shift();
+        let locus3 = loci.shift();
+        
+        let requiredExpressions = {};
+        requiredExpressions[locus1] = genepoolSortedDominance[locus1][0].variant;
+        requiredExpressions[locus2] = genepoolSortedDominance[locus2][0].variant;
+        requiredExpressions[locus3] = genepoolSortedDominance[locus3][1].variant;
+        templates.push(new FitnessTemplate(requiredExpressions, 1));
+      });
+
+      let score = dude.getFitnessScore(templates);
+      
+      // Each template requires two dominant and one recessive expression.
+      // The dominant ones have a 75% chance of being matched, and the recessive one
+      // has a 25% chance. 75%*75%*25% = 14%. 
+      // So we expect about 14% of the templates to match.
+      expect(score).not.toBeLessThan(7);
+      expect(score).not.toBeGreaterThan(21);
+    });    
   });
 });
 
