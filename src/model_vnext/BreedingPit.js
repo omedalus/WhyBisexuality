@@ -58,4 +58,33 @@ BreedingPit.prototype.addGenes = function(genepool) {
 };
 
 
+/**
+ * Equally distributes sex markers to all organisms in the population who don't already
+ * have a sex. Guarantees as equal a distribution as whole numbers will allow.
+ * @param {Array.<string>} sexes A list of sex markers. Each organism gets one marker, pulled
+ *     randomly from the list.
+ */
+BreedingPit.prototype.assignSexes = function(sexes) {
+  // Shuffle the sex array to avoid aliasing if it's called in a loop and
+  // isn't perfectly divisible by the population size.
+  sexes = _.shuffle(sexes);
+  
+  let self = this;
+  let unassignedOrganisms = _.chain(self.population).
+      filter(function(organism) {
+        return _.isNull(organism.sex);
+      }). 
+      shuffle(). 
+      value();
+
+  let iSex = 0;
+  _.each(unassignedOrganisms, function(organism) {
+    organism.sex = sexes[iSex];
+    iSex++;
+    iSex %= sexes.length;
+  });
+};
+
+
+
 

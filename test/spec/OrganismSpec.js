@@ -315,7 +315,7 @@ describe('Organism', function() {
 
       let score = dude.getFitnessScore(templates);
       
-      // Each template requires two dominant and one recessive expression.
+      // Each template requires two dominant and one recessive expressions.
       // The dominant ones have a 75% chance of being matched, and the recessive one
       // has a 25% chance. 75%*75%*25% = 14%. 
       // So we expect about 14% of the templates to match.

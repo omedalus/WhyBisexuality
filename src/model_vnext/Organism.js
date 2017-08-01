@@ -1,7 +1,6 @@
 /* global _ */
 
 /* global Gene */
-/* global FitnessTemplate */
 
 /**
  * An individual in a population. Consists of one or more sets of genes that, working together,
@@ -31,9 +30,9 @@ var Organism = function() {
    * The organism's sex, which is assignable independently of its genome for purposes of this
    * simulation. This is just a designator used by the BreedingPit to select a mate for 
    * this organism, and has no intrinsic function to the organism itself. However, we will
-   * use the following convention: null means hermaphroditic (can mate with any other 
-   * hermaphrodite), 'M' means male (can mate with any female), and 'F' means female (can mate 
-   * with any male).
+   * use the following convention: null=unassigned, 'H'=hermaphroditic, 'M'=male, 'F'=female.
+   * Hermaphrodites can mate with anybody. Males cannot mate with males and females cannot
+   * mate with females.
    * @type {string=}
    */
   self.sex = null;
