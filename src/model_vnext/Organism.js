@@ -40,8 +40,8 @@ Organism.prototype.inheritGenes = function(genes) {
  */
 Organism.prototype.produceGamete = function() {
   let self = this;
-  let selectedGenes = _.map(self.genes, function() {
-    
+  let selectedGenes = _.mapObject(self.genes, function(genearray) {
+    return genearray[Math.floor(Math.random() * genearray.length)];
   });
   return selectedGenes;
 };
