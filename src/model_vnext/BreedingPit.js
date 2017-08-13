@@ -87,4 +87,15 @@ BreedingPit.prototype.assignSexes = function(sexes) {
 
 
 
+/**
+ * Computes the current fitness levels of the population, and kills off (removes from the 
+ * population) the fracToKill portion of the population with the lowest total fitness scores.
+ * @param {Array.<FitnessTemplate>} fitnessTemplates The fitness templates that the organisms
+ *     will be judged on.
+ * @param {number} fracToKill A fraction, between 0 and 1, determining how big a portion of
+ *     the population will be removed.
+ */
+BreedingPit.prototype.cullLeastFitIndividuals = function(fitnessTemplates, fracToKill) {
+  
+};
 

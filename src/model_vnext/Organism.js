@@ -72,6 +72,30 @@ Organism.prototype.produceGamete = function() {
 
 
 /**
+ * Reduces this organism's ploidity to a single gene per locus.
+ * Drops all gene variants at random at each locus until only one (per locus)
+ * is left.
+ * @returs {Organism} This object.
+ */
+Organism.prototype.becomeHaploid = function() {
+  let self = this;
+  _.each(self.genes, function(genearray) {
+    while (genearray.length > 1) {
+      let headsortails = _.random(1,2);
+      if (headsortails == 1) {
+        // Chop off the head.
+        genearray.shift();
+      } else {
+        // Chop off the tail.
+        genearray.pop();
+      }
+    }
+  });
+  return self;
+};
+
+
+/**
  * Returns the gene variants expressed by this individual.
  * @returns {Object.<string, Array.<string> >} A dictionary of arrays of "variant" values,
  *     keyed by locus.

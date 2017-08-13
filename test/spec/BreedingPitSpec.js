@@ -1,5 +1,6 @@
 /* global describe */
 /* global expect */
+/* global spyOn */
 /* global _ */
 
 /* global BreedingPit */
@@ -256,8 +257,34 @@ describe('BreedingPit', function() {
         expect(count).toBeLessThan(65);
       });
     });
+  });
+  
 
-
+  describe('cullLeastFitIndividuals', function() {
+    it('should cull the lowest performers.', function() {
+      let pit = new BreedingPit(100);
+      _.each(pit.population, function(organism, index) {
+        spyOn(organism, 'getFitnessScore').and.returnValue(index);
+      });
+      
+      // Before the cull, see that we have everybody.
+      // Sum of all integers from 1 to 100 is 5050.
+      let fitnessSumBefore = _.reduce(pit.population, function(sum, organism) {
+        return sum + organism.getFitnessScore();
+      }, 0);
+      expect(fitnessSumBefore).toBe(5050);
+      expect(_.length(pit.population)).toBe(100);
+      
+      pit.cullLeastFitIndividuals([], .2);
+      
+      // After the cull, make sure we lost the bottom 20%.
+      // Sum of all integers from 21 to 100 is 40*121=4840.
+      let fitnessSumAfter = _.reduce(pit.population, function(sum, organism) {
+        return sum + organism.getFitnessScore();
+      }, 0);
+      expect(fitnessSumAfter).toBe(4840);
+      expect(pit.population.length).toBe(80);
+    });
   });
 });
 

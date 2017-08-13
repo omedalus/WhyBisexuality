@@ -148,7 +148,46 @@ describe('Organism', function() {
     });
   });
   
-  
+
+  describe('becomeHaploid', function() {
+    it('should reduce to only one set of genes.', function() {
+      let dude = new Organism();
+      dude.inheritGenes(grabGeneVariant(genepoolTwoVariant, 1));
+      dude.inheritGenes(grabGeneVariant(genepoolTwoVariant, 2));
+      
+      dude.becomeHaploid();
+      
+      expect(_.size(dude.genes)).toBe(100);
+      _.each(dude.genes, function(genearray) {
+        expect(genearray.length).toBe(1);
+      });
+    });
+
+    it('should pick the kept gene variant randomly.', function() {
+      let dude = new Organism();
+      dude.inheritGenes(grabGeneVariant(genepoolTwoVariant, 1));
+      dude.inheritGenes(grabGeneVariant(genepoolTwoVariant, 2));
+      
+      dude.becomeHaploid();
+      
+      let firstVariantCount = 0;
+      _.each(dude.genes, function(genearray, locus) {
+        let dudegene = genearray[0];
+        let poolgene = genepoolTwoVariant[locus][0];
+        if (dudegene.variant === poolgene.variant) {
+          firstVariantCount++;
+        }
+      });
+      
+      // In 100 coin flips, getting fewer than 30 heads should be 
+      // extraordinarily unlikely.
+      expect(firstVariantCount).toBeGreaterThan(30);
+      expect(firstVariantCount).toBeLessThan(70);
+    });
+    
+  }); 
+
+
   describe('phenotype and fitness', function() {
 
     it('should express its only variant when haploid.', function() {
