@@ -86,16 +86,39 @@ BreedingPit.prototype.assignSexes = function(sexes) {
 };
 
 
+/**
+ * Computes the current fitness scores of the organisms in the population.
+ * @returns {Array.<number>} An array of fitness scores. Each entry is the 
+ *     fitness score of the organism corresponding to the array index
+ *     in the BreedingPit's population.
+ */
+BreedingPit.prototype.getFitnessScores = function(fitnessTemplates) {
+  let self = this;
+  let fitnessScores = _.map(self.population, function(organism) {
+    return organism.getFitnessScore(fitnessTemplates);
+  });
+  return fitnessScores;
+};
+
 
 /**
- * Computes the current fitness levels of the population, and kills off (removes from the 
- * population) the fracToKill portion of the population with the lowest total fitness scores.
- * @param {Array.<FitnessTemplate>} fitnessTemplates The fitness templates that the organisms
- *     will be judged on.
+ * Kills off (removes from the population) the fracToKill portion of the population with the 
+ * lowest total fitness scores. Note that this changes the order of the organisms in the
+ * population array, making the fitnessScores array useless after this.
+ * @param {Array.<number>} fitnessTemplates The fitness scores of the organisms in the 
+ *     population. Each entry is the fitness score of the organism at the corresponding
+ *     index in the BreedingPit's population.
  * @param {number} fracToKill A fraction, between 0 and 1, determining how big a portion of
  *     the population will be removed.
+ * @returns {BreedingPit} This object.
  */
-BreedingPit.prototype.cullLeastFitIndividuals = function(fitnessTemplates, fracToKill) {
-  
+BreedingPit.prototype.cullLeastFitIndividuals = function(fitnessScores, fracToKill) {
+  let self = this;
+  let sortedPop = _.sortBy(self.population, function(organism, index) {
+    return fitnessScores[index];
+  });
+  let popSizeToKeep = Math.floor(self.population.length * (1.0 - fracToKill));
+  self.population = _.last(sortedPop, popSizeToKeep);
+  return self;
 };
 

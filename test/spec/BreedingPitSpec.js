@@ -4,6 +4,7 @@
 /* global _ */
 
 /* global BreedingPit */
+/* global FitnessTemplate */
 /* global Gene */
 
 
@@ -260,7 +261,57 @@ describe('BreedingPit', function() {
   });
   
 
-  describe('cullLeastFitIndividuals', function() {
+  describe('getFitnessScores and cullLeastFitIndividuals', function() {
+    it('should compute fitness scores en masse.', function() {
+      let pit = new BreedingPit(100);
+      let genepool = {
+        'EYES': [new Gene('EYES', 'brown', 1), new Gene('EYES', 'blue', 2)],
+        'HAIR': [new Gene('HAIR', 'black', 1), new Gene('HAIR', 'blond', 2)]
+      };
+
+      pit.addGenes(genepool);
+      
+      // We now have a population of haploid individuals.
+      // Half the population have brown eyes and half have blue.
+      // Half have black hair and half have blond.
+      
+      // Make blond hair be better than black.
+      // Make blue eyes be better than brown.
+      // Make the combination of blond hair and blue eyes best of all.
+      // Make the combination of brown eyes and black hair deleterious.
+      let fitnessTemplates = [
+        new FitnessTemplate({'HAIR': 'blond'}, 80),
+        new FitnessTemplate({'EYES': 'blue'}, 40),
+        new FitnessTemplate({'HAIR': 'black'}, 20),
+        new FitnessTemplate({'EYES': 'brown'}, 10),
+        new FitnessTemplate({'HAIR': 'blond', 'EYES': 'blue'}, 50),
+        new FitnessTemplate({'HAIR': 'black', 'EYES': 'brown'}, -50)
+      ];
+      
+      let scores = pit.getFitnessScores(fitnessTemplates);
+      
+      let numOrganismsWithFitnessScore = _.countBy(scores, _.identity);
+      
+      // At this point, we expect the following:
+      // ~25 individuals will have black hair (+20) and brown eyes (+10) (-50) = -20.
+      // ~25 individuals will have blond hair (+80) and brown eyes (+10) = 90.
+      // ~25 individuals will have black hair (+20) and blue eyes (+40) = 60.
+      // ~25 individuals will have blond hair (+80) and blue eyes (+40) (+50) = 170.
+      expect(_.size(numOrganismsWithFitnessScore)).toBe(4);
+      expect(numOrganismsWithFitnessScore[-20]).toBeDefined();
+      expect(numOrganismsWithFitnessScore[90]).toBeDefined();
+      expect(numOrganismsWithFitnessScore[60]).toBeDefined();
+      expect(numOrganismsWithFitnessScore[170]).toBeDefined();
+
+      _.each(numOrganismsWithFitnessScore, function(numOrganisms) {
+        // They should be approximately 25 each.
+        // Falling outside the range [12,38] is very unlikely.
+        expect(numOrganisms).toBeGreaterThan(12);
+        expect(numOrganisms).toBeLessThan(38);
+      });
+    });
+
+    
     it('should cull the lowest performers.', function() {
       let pit = new BreedingPit(100);
       _.each(pit.population, function(organism, index) {
@@ -268,21 +319,21 @@ describe('BreedingPit', function() {
       });
       
       // Before the cull, see that we have everybody.
-      // Sum of all integers from 1 to 100 is 5050.
+      // Sum of all integers from 0 to 99 is 50*99=4950.
       let fitnessSumBefore = _.reduce(pit.population, function(sum, organism) {
         return sum + organism.getFitnessScore();
       }, 0);
-      expect(fitnessSumBefore).toBe(5050);
-      expect(_.length(pit.population)).toBe(100);
+      expect(fitnessSumBefore).toBe(4950);
+      expect(pit.population.length).toBe(100);
       
       pit.cullLeastFitIndividuals([], .2);
       
       // After the cull, make sure we lost the bottom 20%.
-      // Sum of all integers from 21 to 100 is 40*121=4840.
+      // Sum of all integers from 20 to 99 is 40*119=4760.
       let fitnessSumAfter = _.reduce(pit.population, function(sum, organism) {
         return sum + organism.getFitnessScore();
       }, 0);
-      expect(fitnessSumAfter).toBe(4840);
+      expect(fitnessSumAfter).toBe(4760);
       expect(pit.population.length).toBe(80);
     });
   });
