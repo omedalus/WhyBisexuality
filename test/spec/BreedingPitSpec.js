@@ -262,9 +262,13 @@ describe('BreedingPit', function() {
   
 
   describe('getFitnessScores and cullLeastFitIndividuals', function() {
-    it('should compute fitness scores en masse.', function() {
-      let pit = new BreedingPit(100);
-      let genepool = {
+    let pit = null;
+    let genepool = null;
+    let fitnessTemplates = null;
+    
+    beforeEach(function() {
+      pit = new BreedingPit(100);
+      genepool = {
         'EYES': [new Gene('EYES', 'brown', 1), new Gene('EYES', 'blue', 2)],
         'HAIR': [new Gene('HAIR', 'black', 1), new Gene('HAIR', 'blond', 2)]
       };
@@ -279,7 +283,7 @@ describe('BreedingPit', function() {
       // Make blue eyes be better than brown.
       // Make the combination of blond hair and blue eyes best of all.
       // Make the combination of brown eyes and black hair deleterious.
-      let fitnessTemplates = [
+      fitnessTemplates = [
         new FitnessTemplate({'HAIR': 'blond'}, 80),
         new FitnessTemplate({'EYES': 'blue'}, 40),
         new FitnessTemplate({'HAIR': 'black'}, 20),
@@ -287,9 +291,11 @@ describe('BreedingPit', function() {
         new FitnessTemplate({'HAIR': 'blond', 'EYES': 'blue'}, 50),
         new FitnessTemplate({'HAIR': 'black', 'EYES': 'brown'}, -50)
       ];
-      
+    });
+    
+
+    it('should compute fitness scores en masse.', function() {
       let scores = pit.getFitnessScores(fitnessTemplates);
-      
       let numOrganismsWithFitnessScore = _.countBy(scores, _.identity);
       
       // At this point, we expect the following:
@@ -313,29 +319,33 @@ describe('BreedingPit', function() {
 
     
     it('should cull the lowest performers.', function() {
-      let pit = new BreedingPit(100);
-      _.each(pit.population, function(organism, index) {
-        spyOn(organism, 'getFitnessScore').and.returnValue(index);
+      // Initially we should have ~25 with a "bad" gene combination.
+      let numWithBadGenes = 0;
+      _.each(pit.population, function(organism) {
+        if (organism.genes['HAIR'][0].variant === 'black' &&
+            organism.genes['EYES'][0].variant === 'brown') {
+          numWithBadGenes++;
+        }
       });
+      // This is probabilistic, but is very unlikely to be less than, say, 12.
+      expect(numWithBadGenes).toBeGreaterThan(12);
       
-      // Before the cull, see that we have everybody.
-      // Sum of all integers from 0 to 99 is 50*99=4950.
-      let fitnessSumBefore = _.reduce(pit.population, function(sum, organism) {
-        return sum + organism.getFitnessScore();
-      }, 0);
-      expect(fitnessSumBefore).toBe(4950);
-      expect(pit.population.length).toBe(100);
+      let scores = pit.getFitnessScores(fitnessTemplates);
+      pit.cullLeastFitIndividuals(scores, .4);
       
-      pit.cullLeastFitIndividuals([], .2);
+      expect(pit.population.length).toBe(60);
       
-      // After the cull, make sure we lost the bottom 20%.
-      // Sum of all integers from 20 to 99 is 40*119=4760.
-      let fitnessSumAfter = _.reduce(pit.population, function(sum, organism) {
-        return sum + organism.getFitnessScore();
-      }, 0);
-      expect(fitnessSumAfter).toBe(4760);
-      expect(pit.population.length).toBe(80);
+      // There should be nobody left who has both black hair and brown eyes.
+      numWithBadGenes = 0;
+      _.each(pit.population, function(organism) {
+        if (organism.genes['HAIR'][0].variant === 'black' &&
+            organism.genes['EYES'][0].variant === 'brown') {
+          numWithBadGenes++;
+        }
+      });
+      expect(numWithBadGenes).toBe(0);
     });
+
   });
 });
 
