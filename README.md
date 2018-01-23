@@ -1,5 +1,21 @@
 # WhyBisexuality
 
+## An exploration of the evolution of multiple sexes in sexual reproduction
+
+by Mikhail Voloshin and Paul C. Bogdan.
+Forked from Paul's WhyBisexuality in order to migrate to Angular 5.0.
+
+### Summary
+
+Sexual reproduction has clear and well-known advantages over its more primitive asexual equivalent, but the evolution of multiple sexes within ....
+
+
+
+It's been long established that sexual reproduction is advantageous to a species because it shuffles the species' genome, conferring rapid adaptation to new survival pressures. However, by itself, this principle doesn't addre
+
+
+### Remaining to flesh out
+
 Intro content:
 Introduce with Maynard Smith and two-fold cost of sex…
 
