@@ -1,19 +1,20 @@
 # WhyMultiSexes
 
-## An exploration of the evolution of multiple sexes in sexual reproduction
+An exploration of the evolution of multiple sexes in sexual reproduction
 
 by Mikhail Voloshin and Paul C. Bogdan.
 Forked from Paul's WhyBisexuality in order to migrate to Angular 5.0.
 
-### Summary
+## Summary
 
-Sexual reproduction has well-known advantages over its more primitive asexual equivalent, but the evolution of multiple sexes broaches a paradox of irreducibility. We ask whether having two or more gamete types confers an advantage over a hypothetical single-gamete reproductive strategy. In the context of proposing an answer to this question, we note that many species have one sex that is effectively haploid in at least one chromosome (the sex chromosome, naturally). We therefore hypothesize that having a two-sex population in which one sex is (at least partially) haploid and the other diploid, and the two sexes can only breed with one another, performs better than a single-sex species in which any individual can mate with any other; and, furthermore, that the reason for this improved performance involves an emergent "beam search" pattern in which the haploid sex experiments with new "features" while the diploid sex retains the best feature set found thus far. This project runs a model that tests this hypothesis.
+Sexual reproduction has well-known advantages over its more primitive asexual equivalent, but the evolution of multiple sexes broaches a paradox of irreducibility. We ask whether having two or more gamete types (i.e. a binary mating system) confers an advantage over a hypothetical single-gamete reproductive strategy. In the context of proposing an answer to this question, we note that many species have one sex that is effectively haploid in at least one chromosome (the sex chromosome, naturally). We therefore hypothesize that having a two-sex population in which one sex is (at least partially) haploid and the other diploid, and the two sexes must breed with one another, performs better than a single-sex species in which any individual can mate with any other; and, furthermore, that the reason for this improved performance involves an emergent hill-climbing strategy in which the haploid sex experiments with new positions in the phenotypic solution space while the diploid sex retains the best solution found thus far . This project runs a model that tests this hypothesis by running a literal evoliutionary algorithm with various combinations of haploid and diploid populations.
 
-....
+## Background
+
+It's been long established that sexual reproduction is advantageous to a species because it shuffles the species' genome, conferring rapid adaptation to new survival pressures as well as fault tolerance against deleterious mutations. ()
 
 
-
-It's been long established that sexual reproduction is advantageous to a species because it shuffles the species' genome, conferring rapid adaptation to new survival pressures. However, by itself, this principle doesn't addre
+However, by itself, this principle doesn't addre
 
 
 ### Remaining to flesh out
